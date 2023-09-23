@@ -1,10 +1,8 @@
 package main
 
 import (
-	"log"
-	"math"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"log"
 )
 
 type Game struct {
@@ -57,7 +55,7 @@ func (game *Game) Start() (err error) {
 	game.StartWindow()
 	defer game.CloseWindow()
 
-	rl.SetTargetFPS(300)
+	rl.SetTargetFPS(120)
 	rl.DisableCursor()
 
 	game.active = true
@@ -121,47 +119,22 @@ func (game *Game) ProcessInputs() (err error) {
 		rl.ToggleFullscreen()
 	}
 
-	if rl.IsKeyPressed(rl.KeySpace) {
-		game.Player().AddPosition(Vector3New(0.0, 1.0, 0.0))
-	}
-
-	if rl.IsKeyPressed(rl.KeyLeftShift) {
-		game.Player().AddPosition(Vector3New(0.0, -1.0, 0.0))
-	}
-
-	if rl.IsKeyDown(rl.KeyRight) {
-		game.Player().AddRotation(Vector3New(0.0, 1.0, 0.0))
-	}
-
-	if rl.IsKeyDown(rl.KeyLeft) {
-		game.Player().AddRotation(Vector3New(0.0, -1.0, 0.0))
-	}
-
-	if rl.IsKeyDown(rl.KeyUp) {
-		game.Player().AddRotation(Vector3New(0.0, 0.0, 1.0))
-	}
-
-	if rl.IsKeyDown(rl.KeyDown) {
-		game.Player().AddRotation(Vector3New(0.0, 0.0, -1.0))
+	if rl.IsKeyDown(rl.KeySpace) {
+		game.Player().AddAcceleration(Vector3New(0.0, 0.05, 0.0))
+	} else if rl.IsKeyDown(rl.KeyLeftShift) {
+		game.Player().AddAcceleration(Vector3New(0.0, -0.05, 0.0))
+	} else if rl.IsKeyDown(rl.KeyW) {
+		game.Player().
+			AddAcceleration(game.Player().Target().Normalize().Mul(Vector3New(0.03, 0.00, 0.03)))
+	} else if rl.IsKeyDown(rl.KeyS) {
+		game.Player().
+			AddAcceleration(game.Player().Target().Normalize().Mul(Vector3New(0.03, 0.00, 0.03)).Inv())
+	} else {
+		//game.Player().SetVelocity(Vector3New(0.0, 0.0, 0.0))
 	}
 
 	mouseDelta := rl.GetMouseDelta()
-	mouseDeltaAbs := []float32{
-		float32(math.Abs(float64(mouseDelta.X))),
-		float32(math.Abs(float64(mouseDelta.Y))),
-	}
-	if mouseDelta.X < 0 {
-		game.Player().AddRotation(Vector3New(0.0, -mouseDeltaAbs[0], 0.0))
-	}
-	if mouseDelta.X > 0 {
-		game.Player().AddRotation(Vector3New(0.0, +mouseDeltaAbs[0], 0.0))
-	}
-	if mouseDelta.Y < 0 {
-		game.Player().AddRotation(Vector3New(0.0, 0.0, +mouseDeltaAbs[1]))
-	}
-	if mouseDelta.Y > 0 {
-		game.Player().AddRotation(Vector3New(0.0, 0.0, -mouseDeltaAbs[1]))
-	}
+	game.Player().AddRotation(Vector3New(0.0, mouseDelta.X, mouseDelta.Y))
 
 	return
 }
@@ -170,10 +143,7 @@ func (game *Game) ProcessCamera() (err error) {
 	player := game.Player()
 
 	game.camera.Position = player.Position().ToRaylib()
-	game.camera.Target = Vector3UnitVector(player.Rotation()).
-		Normalize().
-		Add(player.Position()).
-		ToRaylib()
+	game.camera.Target = player.TargetRelative().ToRaylib()
 
 	rl.DrawCube(
 		game.camera.Target,

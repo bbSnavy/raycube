@@ -35,3 +35,11 @@ func (box Box) SizeY() float32 {
 func (box Box) SizeZ() float32 {
 	return box.size.Z
 }
+
+func (box Box) Min() Vector3 {
+	return box.position
+}
+
+func (box Box) Max() Vector3 {
+	return box.position.Add(box.size)
+}

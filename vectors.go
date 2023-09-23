@@ -63,6 +63,20 @@ func (vector Vector3) Sub(v Vector3) Vector3 {
 		vector.Z-v.Z)
 }
 
+func (vector Vector3) Mul(v Vector3) Vector3 {
+	return Vector3New(
+		vector.X*v.X,
+		vector.Y*v.Y,
+		vector.Z*v.Z)
+}
+
+func (vector Vector3) Div(v Vector3) Vector3 {
+	return Vector3New(
+		DivZero(vector.X, v.X),
+		DivZero(vector.Y, v.Y),
+		DivZero(vector.Z, v.Z))
+}
+
 func (vector Vector3) Mod(v Vector3) Vector3 {
 	x := vector.X
 	y := vector.Y
@@ -89,6 +103,13 @@ func (vector Vector3) Mod(v Vector3) Vector3 {
 	return Vector3New(x, y, z)
 }
 
+func (vector Vector3) Inv() Vector3 {
+	return Vector3New(
+		-vector.X,
+		-vector.Y,
+		-vector.Z)
+}
+
 func (vector Vector3) Length() float64 {
 	return math.Sqrt(float64(
 		vector.X*vector.X + vector.Y*vector.Y + vector.Z*vector.Z))
@@ -98,9 +119,9 @@ func (vector Vector3) Normalize() Vector3 {
 	length := float32(vector.Length())
 
 	return Vector3New(
-		vector.X/length,
-		vector.Y/length,
-		vector.Z/length)
+		DivZero(vector.X, length),
+		DivZero(vector.Y, length),
+		DivZero(vector.Z, length))
 }
 
 func DegreesToRadians(degrees float64) float64 {

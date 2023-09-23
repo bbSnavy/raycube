@@ -48,6 +48,10 @@ func (world *World) Init() *World {
 }
 
 func (world *World) Tick() (err error) {
+	for _, entity := range world.entities {
+		entity.Tick()
+	}
+
 	return
 }
 
