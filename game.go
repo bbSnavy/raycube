@@ -15,6 +15,10 @@ type Game struct {
 	camera *rl.Camera3D
 }
 
+func (game *Game) Player() *Player {
+	return game.world.player
+}
+
 func (game *Game) Init() *Game {
 	game.settings = (&Settings{}).Init()
 
@@ -37,6 +41,8 @@ func (game *Game) InitCamera() (camera *rl.Camera3D) {
 
 func (game *Game) InitWorld() (world *World) {
 	world = &World{}
+
+	world.game = game
 
 	world.Init()
 
@@ -85,6 +91,11 @@ func (game *Game) Tick() {
 		return
 	}
 
+	err = game.world.Tick()
+	if err != nil {
+		return
+	}
+
 	err = game.Render()
 	if err != nil {
 		log.Println("failed at rendering game: err", err)
@@ -95,38 +106,60 @@ func (game *Game) Tick() {
 func (game *Game) ProcessInputs() (err error) {
 	if rl.IsKeyPressed(rl.KeyEscape) {
 		game.active = false
-	}
-
-	if rl.IsKeyDown(rl.KeySpace) {
-		game.camera.Position = rl.Vector3Add(
-			game.camera.Position,
-			rl.Vector3{
-				Y: 0.05,
-			})
-
-		game.camera.Target.Y += 0.05
-	}
-
-	if rl.IsKeyDown(rl.KeyLeftShift) {
-		game.camera.Position = rl.Vector3Add(
-			game.camera.Position,
-			rl.Vector3{
-				Y: -0.05,
-			})
-
-		game.camera.Target.Y -= 0.05
+		return
 	}
 
 	if rl.IsKeyPressed(rl.KeyF2) {
 		rl.TakeScreenshot("frame.png")
 	}
 
+	if rl.IsKeyPressed(rl.KeySpace) {
+		game.Player().AddPosition(Vector3New(0.0, 1.0, 0.0))
+	}
+
+	if rl.IsKeyPressed(rl.KeyLeftShift) {
+		game.Player().AddPosition(Vector3New(0.0, -1.0, 0.0))
+	}
+
+	if rl.IsKeyDown(rl.KeyRight) {
+		game.Player().AddRotation(Vector3New(0.0, -1.0, 0.0))
+	}
+
+	if rl.IsKeyDown(rl.KeyLeft) {
+		game.Player().AddRotation(Vector3New(0.0, 1.0, 0.0))
+	}
+
+	if rl.IsKeyDown(rl.KeyUp) {
+		game.Player().AddRotation(Vector3New(0.0, 0.0, -1.0))
+	}
+
+	if rl.IsKeyDown(rl.KeyDown) {
+		game.Player().AddRotation(Vector3New(0.0, 0.0, 1.0))
+	}
+
+	return
+}
+
+func (game *Game) ProcessCamera() (err error) {
+	player := game.Player()
+
+	game.camera.Position = player.Position().ToRaylib()
+	game.camera.Target = Vector3EulerToMatrix(player.Rotation()).
+		Normalize().
+		Add(player.Position()).
+		ToRaylib()
+
+	rl.DrawCube(
+		game.camera.Target,
+		0.1,
+		0.1,
+		0.1,
+		rl.Black)
+
 	return
 }
 
 func (game *Game) Render() (err error) {
-	rl.UpdateCamera(game.camera, rl.CameraThirdPerson)
-
 	rl.BeginDrawing()
 
 	rl.ClearBackground(rl.SkyBlue)
@@ -134,7 +167,7 @@ func (game *Game) Render() (err error) {
 	{
 		rl.BeginMode3D(*game.camera)
 
-		err = game.RenderCamera()
+		err = game.ProcessCamera()
 		if err != nil {
 			return
 		}
@@ -150,17 +183,6 @@ func (game *Game) Render() (err error) {
 	rl.DrawFPS(16, 16)
 
 	rl.EndDrawing()
-
-	return
-}
-
-func (game *Game) RenderCamera() (err error) {
-	rl.DrawCube(
-		game.camera.Target,
-		1.0,
-		2.0,
-		1.0,
-		rl.Black)
 
 	return
 }
