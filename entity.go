@@ -6,7 +6,7 @@ type Entity interface {
 	Acceleration() Vector3
 	Rotation() Vector3
 
-	Tick()
+	Tick(world *World)
 }
 
 type EntityBase struct {

@@ -119,8 +119,8 @@ func (game *Game) ProcessInputs() (err error) {
 		rl.ToggleFullscreen()
 	}
 
-	if rl.IsKeyDown(rl.KeySpace) {
-		game.Player().AddAcceleration(Vector3New(0.0, 0.05, 0.0))
+	if rl.IsKeyPressed(rl.KeySpace) {
+		game.Player().AddVelocity(Vector3New(0.0, 0.5, 0.0))
 	} else if rl.IsKeyDown(rl.KeyLeftShift) {
 		game.Player().AddAcceleration(Vector3New(0.0, -0.05, 0.0))
 	} else if rl.IsKeyDown(rl.KeyW) {
@@ -142,15 +142,8 @@ func (game *Game) ProcessInputs() (err error) {
 func (game *Game) ProcessCamera() (err error) {
 	player := game.Player()
 
-	game.camera.Position = player.Position().ToRaylib()
-	game.camera.Target = player.TargetRelative().ToRaylib()
-
-	rl.DrawCube(
-		game.camera.Target,
-		0.010,
-		0.010,
-		0.010,
-		rl.Black)
+	game.camera.Position = player.Position().Add(player.CameraOffset()).ToRaylib()
+	game.camera.Target = player.TargetRelative().Add(player.CameraOffset()).ToRaylib()
 
 	return
 }
@@ -174,6 +167,14 @@ func (game *Game) Render() (err error) {
 		}
 
 		rl.EndMode3D()
+	}
+
+	{
+		rl.DrawRectangle(
+			int32(rl.GetScreenWidth())/2-4,
+			int32(rl.GetScreenHeight())/2-4,
+			8, 8,
+			rl.RayWhite)
 	}
 
 	rl.DrawFPS(16, 16)

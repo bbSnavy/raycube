@@ -2,6 +2,7 @@ package main
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"os"
 )
 
 type World struct {
@@ -49,22 +50,39 @@ func (world *World) Init() *World {
 
 func (world *World) Tick() (err error) {
 	for _, entity := range world.entities {
-		entity.Tick()
+		entity.Tick(world)
 	}
 
 	return
 }
 
 func (world *World) Render() (err error) {
+
 	for _, cube := range world.cubes {
 		cubePosition := cube.Position()
 
-		rl.DrawCube(
+		if !cube.loaded {
+			texture := rl.LoadTexture(os.Getenv("TEXTURE"))
+			mesh := rl.GenMeshCube(1.0, 1.0, 1.0)
+			model := rl.LoadModelFromMesh(mesh)
+			model.Materials.GetMap(rl.MapDiffuse).Texture = texture
+
+			cube.model = model
+			cube.loaded = true
+		}
+
+		rl.DrawModel(
+			cube.Model(),
 			cubePosition.ToRaylib(),
-			1,
-			1,
-			1,
-			rl.Purple)
+			1.0,
+			rl.White)
+
+		//rl.DrawCube(
+		//	cubePosition.ToRaylib(),
+		//	1,
+		//	1,
+		//	1,
+		//	rl.Purple)
 	}
 
 	return
