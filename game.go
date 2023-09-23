@@ -11,7 +11,6 @@ type Game struct {
 	world *World
 
 	active bool
-	model  rl.Model
 
 	camera *rl.Camera3D
 }
@@ -52,13 +51,6 @@ func (game *Game) Start() (err error) {
 	rl.DisableCursor()
 
 	game.active = true
-
-	Texture := rl.LoadTexture("model.png")
-	Mesh := rl.GenMeshCube(1.0, 1.0, 1.0)
-	Model := rl.LoadModelFromMesh(Mesh)
-	Model.Materials.GetMap(rl.MapDiffuse).Texture = Texture
-
-	game.model = Model
 
 	for game.IsRunning() {
 		game.Tick()
@@ -133,7 +125,7 @@ func (game *Game) ProcessInputs() (err error) {
 }
 
 func (game *Game) Render() (err error) {
-	rl.UpdateCamera(game.camera, rl.CameraFirstPerson)
+	rl.UpdateCamera(game.camera, rl.CameraThirdPerson)
 
 	rl.BeginDrawing()
 
@@ -141,6 +133,11 @@ func (game *Game) Render() (err error) {
 
 	{
 		rl.BeginMode3D(*game.camera)
+
+		err = game.RenderCamera()
+		if err != nil {
+			return
+		}
 
 		err = game.world.Render()
 		if err != nil {
@@ -153,6 +150,17 @@ func (game *Game) Render() (err error) {
 	rl.DrawFPS(16, 16)
 
 	rl.EndDrawing()
+
+	return
+}
+
+func (game *Game) RenderCamera() (err error) {
+	rl.DrawCube(
+		game.camera.Target,
+		1.0,
+		2.0,
+		1.0,
+		rl.Black)
 
 	return
 }
