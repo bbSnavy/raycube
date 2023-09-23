@@ -1,8 +1,10 @@
 package main
 
 import (
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"log"
+	"math"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type Game struct {
@@ -50,6 +52,8 @@ func (game *Game) InitWorld() (world *World) {
 }
 
 func (game *Game) Start() (err error) {
+	rl.SetConfigFlags(rl.FlagWindowResizable)
+
 	game.StartWindow()
 	defer game.CloseWindow()
 
@@ -113,6 +117,10 @@ func (game *Game) ProcessInputs() (err error) {
 		rl.TakeScreenshot("frame.png")
 	}
 
+	if rl.IsKeyPressed(rl.KeyF11) {
+		rl.ToggleFullscreen()
+	}
+
 	if rl.IsKeyPressed(rl.KeySpace) {
 		game.Player().AddPosition(Vector3New(0.0, 1.0, 0.0))
 	}
@@ -122,19 +130,37 @@ func (game *Game) ProcessInputs() (err error) {
 	}
 
 	if rl.IsKeyDown(rl.KeyRight) {
-		game.Player().AddRotation(Vector3New(0.0, -1.0, 0.0))
-	}
-
-	if rl.IsKeyDown(rl.KeyLeft) {
 		game.Player().AddRotation(Vector3New(0.0, 1.0, 0.0))
 	}
 
+	if rl.IsKeyDown(rl.KeyLeft) {
+		game.Player().AddRotation(Vector3New(0.0, -1.0, 0.0))
+	}
+
 	if rl.IsKeyDown(rl.KeyUp) {
-		game.Player().AddRotation(Vector3New(0.0, 0.0, -1.0))
+		game.Player().AddRotation(Vector3New(0.0, 0.0, 1.0))
 	}
 
 	if rl.IsKeyDown(rl.KeyDown) {
-		game.Player().AddRotation(Vector3New(0.0, 0.0, 1.0))
+		game.Player().AddRotation(Vector3New(0.0, 0.0, -1.0))
+	}
+
+	mouseDelta := rl.GetMouseDelta()
+	mouseDeltaAbs := []float32{
+		float32(math.Abs(float64(mouseDelta.X))),
+		float32(math.Abs(float64(mouseDelta.Y))),
+	}
+	if mouseDelta.X < 0 {
+		game.Player().AddRotation(Vector3New(0.0, -mouseDeltaAbs[0], 0.0))
+	}
+	if mouseDelta.X > 0 {
+		game.Player().AddRotation(Vector3New(0.0, +mouseDeltaAbs[0], 0.0))
+	}
+	if mouseDelta.Y < 0 {
+		game.Player().AddRotation(Vector3New(0.0, 0.0, +mouseDeltaAbs[1]))
+	}
+	if mouseDelta.Y > 0 {
+		game.Player().AddRotation(Vector3New(0.0, 0.0, -mouseDeltaAbs[1]))
 	}
 
 	return
@@ -144,16 +170,16 @@ func (game *Game) ProcessCamera() (err error) {
 	player := game.Player()
 
 	game.camera.Position = player.Position().ToRaylib()
-	game.camera.Target = Vector3EulerToMatrix(player.Rotation()).
+	game.camera.Target = Vector3UnitVector(player.Rotation()).
 		Normalize().
 		Add(player.Position()).
 		ToRaylib()
 
 	rl.DrawCube(
 		game.camera.Target,
-		0.1,
-		0.1,
-		0.1,
+		0.010,
+		0.010,
+		0.010,
 		rl.Black)
 
 	return

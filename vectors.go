@@ -1,9 +1,9 @@
 package main
 
 import (
-	rl "github.com/gen2brain/raylib-go/raylib"
-	"log"
 	"math"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type Vector3 struct {
@@ -104,48 +104,19 @@ func (vector Vector3) Normalize() Vector3 {
 }
 
 func DegreesToRadians(degrees float64) float64 {
-	//return rl.Deg2rad * degrees
-
 	return degrees * (math.Pi / 180.0)
 }
 
-func Vector3EulerToMatrix(rotation Vector3) (result Vector3) {
-	phi := DegreesToRadians(float64(rotation.Y))
-	theta := DegreesToRadians(float64(rotation.Z))
+func Vector3UnitVector(rotation Vector3) (result Vector3) {
+	a := DegreesToRadians(float64(rotation.Y)) // yaw
+	b := DegreesToRadians(float64(rotation.Z)) // pitch
 
-	log.Println(rotation, []float64{phi, theta})
-
-	x := math.Sin(phi)
-	y := math.Cos(theta)
-	z := math.Sin(theta) * math.Cos(phi)
-
-	//x := math.Cos(float64(phi)) + math.Cos(float64(theta))
-	//y := math.Cos(float64(phi)) + math.Sin(float64(theta))
-	//z := math.Cos(float64(phi))
+	x := math.Cos(a) * math.Cos(b)
+	y := math.Sin(b)
+	z := math.Sin(a) * math.Cos(b)
 
 	return Vector3New(
 		float32(x),
 		float32(y),
 		float32(z))
-
-	///*
-	//	x = cos(yaw)*cos(pitch)
-	//	y = sin(yaw)*cos(pitch)
-	//	z = sin(pitch)
-	//*/
-	//
-	//a := rl.Deg2rad * rotation.X // yaw
-	//b := rl.Deg2rad * rotation.Y // pitch
-	//c := rl.Deg2rad * rotation.Z // roll
-	//
-	//va := math.Cos(float64(a)) * math.Cos(float64(b))
-	//vb := math.Sin(float64(a)) * math.Cos(float64(b))
-	//vc := math.Sin(float64(b))
-	//
-	//_ = c
-	//
-	//return Vector3New(
-	//	float32(va),
-	//	float32(vb),
-	//	float32(vc))
 }

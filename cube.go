@@ -4,7 +4,8 @@ import "image/color"
 
 type Cube struct {
 	position Vector3
-	color    color.RGBA
+
+	color color.RGBA
 }
 
 func (cube *Cube) Position() Vector3 {

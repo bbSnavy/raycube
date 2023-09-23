@@ -13,6 +13,10 @@ type World struct {
 	cubes    []*Cube
 }
 
+func (world *World) Player() *Player {
+	return world.player
+}
+
 func (world *World) Init() *World {
 	if world.game == nil {
 		panic("game is nil")
@@ -25,8 +29,8 @@ func (world *World) Init() *World {
 
 	world.entities = append(world.entities, world.player)
 
-	for x := 0; x < 4; x++ {
-		for z := 0; z < 4; z++ {
+	for x := 0; x < 64; x++ {
+		for z := 0; z < 64; z++ {
 			for y := 0; y < 1; y++ {
 				cube := (&Cube{
 					position: Vector3New(
@@ -44,20 +48,6 @@ func (world *World) Init() *World {
 }
 
 func (world *World) Tick() (err error) {
-	cameraHitbox := BoxNew(
-		world.player.Position(),
-		Vector3New(1.0, 1.0, 1.0))
-
-	for _, cube := range world.cubes {
-		cubeBox := cube.Box()
-
-		if CheckCollisionBoxToBox(cameraHitbox, cubeBox) {
-			cube.color = rl.Red
-		} else {
-			cube.color = rl.Purple
-		}
-	}
-
 	return
 }
 
@@ -70,7 +60,7 @@ func (world *World) Render() (err error) {
 			1,
 			1,
 			1,
-			cube.color)
+			rl.Purple)
 	}
 
 	return
