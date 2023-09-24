@@ -1,8 +1,20 @@
 package main
 
-import "log"
+var (
+	GAME *Game
+)
+
+func init() {
+	GAME = (&Game{}).Init()
+}
 
 func main() {
-	game := (&Game{}).Init()
-	log.Println(game.Start())
+	var (
+		err error
+	)
+
+	err = GAME.Start()
+	if err != nil {
+		panic(err)
+	}
 }
