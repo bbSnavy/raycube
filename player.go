@@ -64,15 +64,54 @@ func (player *Player) Tick(world *World) {
 	player.SetAcceleration(acceleration)
 	player.SetVelocity(velocity)
 
-	for _, cube := range world.cubes {
-		if CheckCollisionBoxToBox(cube.Box(), player.Box()) {
-			log.Println("collision!", velocity)
+	playerBox := player.Box()
+	playerBox.position = position.Add(velocity)
 
-			if velocity.Y < 0.0 {
-				velocity.Y = 0.0
-			}
-			break
+	for _, cube := range world.cubes {
+		if cube.Position().Distance(player.Position()) > 8.0 {
+			continue
 		}
+
+		a, b := cube.Box().CollidesWith(playerBox)
+		if a {
+			switch b {
+			case NoFace:
+				break
+
+			case TopFace:
+				velocity.Y = 0.0
+				break
+			case BottomFace:
+				velocity.Y = 0.0
+				break
+
+			case LeftFace:
+				velocity.X = 0.0
+				break
+			case RightFace:
+				velocity.X = 0.0
+				break
+
+			case FrontFace:
+				velocity.Z = 0.0
+				break
+			case BackFace:
+				velocity.Z = 0.0
+				break
+
+			default:
+				{
+					log.Println("unhandled face:", b)
+					break
+				}
+			}
+		}
+
+		//if CheckCollisionBoxToBox(cube.Box(), playerBox) {
+		//
+		//}
+
+		//cube.color = rl.Gray
 	}
 
 	position = position.Add(velocity)

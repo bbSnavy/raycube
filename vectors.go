@@ -124,6 +124,18 @@ func (vector Vector3) Normalize() Vector3 {
 		DivZero(vector.Z, length))
 }
 
+func (vector Vector3) DistanceSquare(v Vector3) float64 {
+	x := v.X - vector.X
+	y := v.Y - vector.Y
+	z := v.Z - vector.Z
+
+	return float64(x*x + y*y + z*z)
+}
+
+func (vector Vector3) Distance(v Vector3) float64 {
+	return math.Sqrt(vector.DistanceSquare(v))
+}
+
 func DegreesToRadians(degrees float64) float64 {
 	return degrees * (math.Pi / 180.0)
 }

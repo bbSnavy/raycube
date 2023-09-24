@@ -56,33 +56,35 @@ func (world *World) Tick() (err error) {
 	return
 }
 
+var (
+	model       rl.Model
+	modelLoaded = false
+)
+
 func (world *World) Render() (err error) {
+	if !modelLoaded {
+		texture := rl.LoadTexture(os.Getenv("TEXTURE"))
+		mesh := rl.GenMeshCube(1.0, 1.0, 1.0)
+		model = rl.LoadModelFromMesh(mesh)
+		model.Materials.GetMap(rl.MapDiffuse).Texture = texture
+
+		modelLoaded = true
+	}
 
 	for _, cube := range world.cubes {
 		cubePosition := cube.Position()
 
-		if !cube.loaded {
-			texture := rl.LoadTexture(os.Getenv("TEXTURE"))
-			mesh := rl.GenMeshCube(1.0, 1.0, 1.0)
-			model := rl.LoadModelFromMesh(mesh)
-			model.Materials.GetMap(rl.MapDiffuse).Texture = texture
-
-			cube.model = model
-			cube.loaded = true
-		}
+		//if !cube.loaded {
+		//
+		//	cube.model = model
+		//	cube.loaded = true
+		//}
 
 		rl.DrawModel(
-			cube.Model(),
+			model,
 			cubePosition.ToRaylib(),
 			1.0,
 			rl.White)
-
-		//rl.DrawCube(
-		//	cubePosition.ToRaylib(),
-		//	1,
-		//	1,
-		//	1,
-		//	rl.Purple)
 	}
 
 	return

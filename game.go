@@ -121,20 +121,24 @@ func (game *Game) ProcessInputs() (err error) {
 
 	if rl.IsKeyPressed(rl.KeySpace) {
 		game.Player().AddVelocity(Vector3New(0.0, 0.5, 0.0))
-	} else if rl.IsKeyDown(rl.KeyLeftShift) {
+	}
+
+	if rl.IsKeyDown(rl.KeyLeftShift) {
 		game.Player().AddAcceleration(Vector3New(0.0, -0.05, 0.0))
-	} else if rl.IsKeyDown(rl.KeyW) {
+	}
+
+	if rl.IsKeyDown(rl.KeyW) {
 		game.Player().
 			AddAcceleration(game.Player().Target().Normalize().Mul(Vector3New(0.03, 0.00, 0.03)))
-	} else if rl.IsKeyDown(rl.KeyS) {
+	}
+
+	if rl.IsKeyDown(rl.KeyS) {
 		game.Player().
 			AddAcceleration(game.Player().Target().Normalize().Mul(Vector3New(0.03, 0.00, 0.03)).Inv())
-	} else {
-		//game.Player().SetVelocity(Vector3New(0.0, 0.0, 0.0))
 	}
 
 	mouseDelta := rl.GetMouseDelta()
-	game.Player().AddRotation(Vector3New(0.0, mouseDelta.X, mouseDelta.Y))
+	game.Player().AddRotation(Vector3New(0.0, mouseDelta.X*0.25, mouseDelta.Y*0.25))
 
 	return
 }
@@ -171,8 +175,8 @@ func (game *Game) Render() (err error) {
 
 	{
 		rl.DrawRectangle(
-			int32(rl.GetScreenWidth())/2-4,
-			int32(rl.GetScreenHeight())/2-4,
+			int32(rl.GetRenderWidth())/2-4,
+			int32(rl.GetRenderHeight())/2-4,
 			8, 8,
 			rl.RayWhite)
 	}

@@ -1,5 +1,17 @@
 package main
 
+type BoxFace int
+
+const (
+	NoFace BoxFace = iota
+	TopFace
+	BottomFace
+	FrontFace
+	BackFace
+	LeftFace
+	RightFace
+)
+
 type Box struct {
 	position Vector3
 	size     Vector3
