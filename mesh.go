@@ -42,32 +42,24 @@ func (mesh *Mesh) Init() *Mesh {
 }
 
 func (mesh *Mesh) Compute() (result rl.Mesh) {
-	data := make([]*Cube, 0)
-
 	for _, cube := range mesh.Cubes() {
-		flag := false
+		for _, face := range BoxFaceListTest() {
+			faceIndex := face
 
-		for _, face := range BoxFaceList() {
 			neighbor := cube.Neighbor(face)
+
 			if neighbor == nil {
-				flag = true
-				break
+				cube.facesEnabled[faceIndex] = true
+				continue
 			}
 
 			if neighbor.Material() == MaterialAir {
-				flag = true
-				break
+				cube.facesEnabled[faceIndex] = true
+				continue
 			}
 		}
-
-		if !flag {
-			continue
-		}
-
-		data = append(data, cube)
 	}
 
-	mesh.cubes = data
 	mesh.computed = true
 
 	return

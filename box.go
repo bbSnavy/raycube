@@ -23,6 +23,36 @@ func BoxFaceList() []BoxFace {
 	}
 }
 
+func BoxFaceListTest() []BoxFace {
+	return []BoxFace{
+		FrontFace,
+		BackFace,
+		TopFace,
+		BottomFace,
+		RightFace,
+		LeftFace,
+	}
+}
+
+func (face BoxFace) Opposite() BoxFace {
+	switch face {
+	case TopFace:
+		return BottomFace
+	case BottomFace:
+		return TopFace
+	case FrontFace:
+		return BackFace
+	case BackFace:
+		return FrontFace
+	case LeftFace:
+		return RightFace
+	case RightFace:
+		return LeftFace
+	default:
+		return NoFace
+	}
+}
+
 type Box struct {
 	position Vector3
 	size     Vector3

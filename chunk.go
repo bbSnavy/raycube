@@ -122,13 +122,9 @@ func (chunk *Chunk) MeshGenerate() (result []*Mesh, err error) {
 			return
 		}
 
-		//cube.material = MaterialGrass
-
 		mesh.AddCube(cube)
 
 		for _, face := range BoxFaceList() {
-			//time.Sleep(50 * time.Millisecond)
-
 			neighbor := cube.Neighbor(face)
 			if neighbor == nil {
 				continue
@@ -144,12 +140,12 @@ func (chunk *Chunk) MeshGenerate() (result []*Mesh, err error) {
 
 	fn(start, mesh)
 
+	mesh.Compute()
+
 	timeEnd := time.Now().UnixMicro()
 
-	log.Println(float64(timeEnd-timeStart) / 1000.0)
-
+	log.Println("mesh computed", float64(timeEnd-timeStart)/1000.0, "ms")
 	log.Println("mesh length->", len(mesh.Cubes()))
-	log.Println("mesh computed->", mesh.Compute())
 
 	result = append(result, mesh)
 
@@ -195,60 +191,15 @@ func (chunk *Chunk) Render() (err error) {
 				return
 			}
 		}
-
-		//meshResult := mesh.result
-		//
-		//meshModel := rl.LoadModelFromMesh(meshResult)
-		//
-		//meshModel.Materials.GetMap(rl.MapDiffuse).Texture = modelTexture
-		//
-		//rl.DrawModel(
-		//	meshModel,
-		//	mesh.position.
-		//		Add(Vector3New(0.0, 16.0, 0.0)).
-		//		ToRaylib(),
-		//	1.0,
-		//	rl.White)
 	}
-
-	//for _, cube := range chunk.cubes {
-	//
-	//}
 
 	return
 }
 
 func (chunk *Chunk) RenderCube(cube *Cube) (err error) {
-	cubeMaterial := cube.Material()
-
-	switch cubeMaterial {
-	case MaterialAir:
-		break
-
-	case MaterialStone:
-		rl.DrawModel(
-			model,
-			cube.
-				Position().
-				Add(chunk.PositionBase()).
-				ToRaylib(),
-			1.0,
-			rl.White)
-
-		break
-
-	case MaterialGrass:
-		rl.DrawCube(
-			cube.
-				Position().
-				Add(chunk.PositionBase()).
-				ToRaylib(),
-			1.0,
-			1.0,
-			1.0,
-			rl.DarkGreen)
-
-		break
+	err = cube.Render()
+	if err != nil {
+		return
 	}
 
 	return
