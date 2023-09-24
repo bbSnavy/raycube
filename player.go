@@ -39,7 +39,7 @@ func (player *Player) Init() *Player {
 
 	player.EntityBase.Init()
 
-	player.SetPosition(Vector3New(2.0, 8.0, 2.0))
+	player.SetPosition(Vector3New(2.0, 80.0, 2.0))
 
 	return player
 }
@@ -67,51 +67,47 @@ func (player *Player) Tick(world *World) {
 	playerBox := player.Box()
 	playerBox.position = position.Add(velocity)
 
-	for _, cube := range world.cubes {
-		if cube.Position().Distance(player.Position()) > 8.0 {
-			continue
-		}
+	for _, chunk := range world.chunks {
+		for _, cube := range chunk.Cubes() {
+			if cube.Position().Distance(player.Position()) > 8.0 {
+				continue
+			}
 
-		a, b := cube.Box().CollidesWith(playerBox)
-		if a {
-			switch b {
-			case NoFace:
-				break
-
-			case TopFace:
-				velocity.Y = 0.0
-				break
-			case BottomFace:
-				velocity.Y = 0.0
-				break
-
-			case LeftFace:
-				velocity.X = 0.0
-				break
-			case RightFace:
-				velocity.X = 0.0
-				break
-
-			case FrontFace:
-				velocity.Z = 0.0
-				break
-			case BackFace:
-				velocity.Z = 0.0
-				break
-
-			default:
-				{
-					log.Println("unhandled face:", b)
+			a, b := cube.Box().CollidesWith(playerBox)
+			if a {
+				switch b {
+				case NoFace:
 					break
+
+				case TopFace:
+					velocity.Y = 0.0
+					break
+				case BottomFace:
+					velocity.Y = 0.0
+					break
+
+				case LeftFace:
+					velocity.X = 0.0
+					break
+				case RightFace:
+					velocity.X = 0.0
+					break
+
+				case FrontFace:
+					velocity.Z = 0.0
+					break
+				case BackFace:
+					velocity.Z = 0.0
+					break
+
+				default:
+					{
+						log.Println("unhandled face:", b)
+						break
+					}
 				}
 			}
 		}
-
-		//if CheckCollisionBoxToBox(cube.Box(), playerBox) {
-		//
-		//}
-
-		//cube.color = rl.Gray
 	}
 
 	position = position.Add(velocity)

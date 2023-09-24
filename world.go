@@ -1,17 +1,12 @@
 package main
 
-import (
-	rl "github.com/gen2brain/raylib-go/raylib"
-	"os"
-)
-
 type World struct {
 	game *Game
 
 	player *Player
 
 	entities []Entity
-	cubes    []*Cube
+	chunks   []*Chunk
 }
 
 func (world *World) Player() *Player {
@@ -26,21 +21,20 @@ func (world *World) Init() *World {
 	world.player = (&Player{}).Init()
 
 	world.entities = make([]Entity, 0)
-	world.cubes = make([]*Cube, 0)
+	world.chunks = make([]*Chunk, 0)
 
 	world.entities = append(world.entities, world.player)
 
-	for x := 0; x < 64; x++ {
-		for z := 0; z < 64; z++ {
+	for x := 0; x < 2; x++ {
+		for z := 0; z < 2; z++ {
 			for y := 0; y < 1; y++ {
-				cube := (&Cube{
-					position: Vector3New(
-						float32(x),
-						float32(y),
-						float32(z)),
+				chunk := (&Chunk{
+					position: Vector3New(float32(x), float32(y), float32(z)),
+
+					world: world,
 				}).Init()
 
-				world.cubes = append(world.cubes, cube)
+				world.chunks = append(world.chunks, chunk)
 			}
 		}
 	}
@@ -56,35 +50,12 @@ func (world *World) Tick() (err error) {
 	return
 }
 
-var (
-	model       rl.Model
-	modelLoaded = false
-)
-
 func (world *World) Render() (err error) {
-	if !modelLoaded {
-		texture := rl.LoadTexture(os.Getenv("TEXTURE"))
-		mesh := rl.GenMeshCube(1.0, 1.0, 1.0)
-		model = rl.LoadModelFromMesh(mesh)
-		model.Materials.GetMap(rl.MapDiffuse).Texture = texture
-
-		modelLoaded = true
-	}
-
-	for _, cube := range world.cubes {
-		cubePosition := cube.Position()
-
-		//if !cube.loaded {
-		//
-		//	cube.model = model
-		//	cube.loaded = true
-		//}
-
-		rl.DrawModel(
-			model,
-			cubePosition.ToRaylib(),
-			1.0,
-			rl.White)
+	for _, chunk := range world.chunks {
+		err = chunk.Render()
+		if err != nil {
+			return
+		}
 	}
 
 	return
