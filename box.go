@@ -23,17 +23,6 @@ func BoxFaceList() []BoxFace {
 	}
 }
 
-func BoxFaceListTest() []BoxFace {
-	return []BoxFace{
-		FrontFace,
-		BackFace,
-		TopFace,
-		BottomFace,
-		RightFace,
-		LeftFace,
-	}
-}
-
 func (face BoxFace) Opposite() BoxFace {
 	switch face {
 	case TopFace:

@@ -43,7 +43,7 @@ func (mesh *Mesh) Init() *Mesh {
 
 func (mesh *Mesh) Compute() (result rl.Mesh) {
 	for _, cube := range mesh.Cubes() {
-		for _, face := range BoxFaceListTest() {
+		for _, face := range BoxFaceList() {
 			faceIndex := face
 
 			neighbor := cube.Neighbor(face)

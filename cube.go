@@ -74,11 +74,11 @@ func (cube *Cube) Neighbor(face BoxFace) (result *Cube) {
 		break
 
 	case LeftFace:
-		delta = Vector3New(+1.0, 0.0, 0.0)
+		delta = Vector3New(-1.0, 0.0, 0.0)
 		break
 
 	case RightFace:
-		delta = Vector3New(-1.0, 0.0, 0.0)
+		delta = Vector3New(+1.0, 0.0, 0.0)
 		break
 
 	default:
@@ -106,10 +106,10 @@ func (cube *Cube) Render() (err error) {
 	rl.Begin(rl.RL_TRIANGLES)
 
 	rl.Color4ub(
-		rl.Red.R,
-		rl.Red.G,
-		rl.Red.B,
-		rl.Red.A)
+		rl.Gray.R,
+		rl.Gray.G,
+		rl.Gray.B,
+		rl.Gray.A)
 
 	for index, value := range cube.facesEnabled {
 		face := BoxFace(index)
@@ -203,7 +203,6 @@ func (cube *Cube) Render() (err error) {
 				break
 			}
 		}
-
 	}
 
 	rl.End()
