@@ -27,6 +27,10 @@ func (cube *Cube) Position() Vector3 {
 	return cube.position.Copy()
 }
 
+func (cube *Cube) PositionWorld() Vector3 {
+	return cube.Chunk().PositionBase().Add(cube.Position())
+}
+
 func (cube *Cube) Box() Box {
 	return BoxNew(
 		cube.Position(),
@@ -105,11 +109,29 @@ func (cube *Cube) Render() (err error) {
 
 	rl.Begin(rl.RL_TRIANGLES)
 
-	rl.Color4ub(
-		rl.Gray.R,
-		rl.Gray.G,
-		rl.Gray.B,
-		rl.Gray.A)
+	//switch cubeMaterial {
+	//case MaterialStone:
+	//	{
+	//		rl.Color4ub(
+	//			rl.Gray.R,
+	//			rl.Gray.G,
+	//			rl.Gray.B,
+	//			rl.Gray.A)
+	//
+	//		break
+	//	}
+	//
+	//case MaterialGrass:
+	//	{
+	//		rl.Color4ub(
+	//			rl.DarkGreen.R,
+	//			rl.DarkGreen.G,
+	//			rl.DarkGreen.B,
+	//			rl.DarkGreen.A)
+	//
+	//		break
+	//	}
+	//}
 
 	for index, value := range cube.facesEnabled {
 		face := BoxFace(index)
@@ -121,6 +143,8 @@ func (cube *Cube) Render() (err error) {
 		switch face {
 		case FrontFace:
 			{
+				rl.Color4ub(128, 128, 128, 255)
+
 				// Front face
 				rl.Vertex3f(x-width/2, y-height/2, z+length/2) // Bottom Left
 				rl.Vertex3f(x+width/2, y-height/2, z+length/2) // Bottom Right
@@ -135,6 +159,8 @@ func (cube *Cube) Render() (err error) {
 
 		case BackFace:
 			{
+				rl.Color4ub(128, 128, 128, 255)
+
 				// Back face
 				rl.Vertex3f(x-width/2, y-height/2, z-length/2) // Bottom Left
 				rl.Vertex3f(x-width/2, y+height/2, z-length/2) // Top Left
@@ -149,6 +175,8 @@ func (cube *Cube) Render() (err error) {
 
 		case TopFace:
 			{
+				rl.Color4ub(255, 255, 255, 255)
+
 				// Top face
 				rl.Vertex3f(x-width/2, y+height/2, z-length/2) // Top Left
 				rl.Vertex3f(x-width/2, y+height/2, z+length/2) // Bottom Left
@@ -163,6 +191,8 @@ func (cube *Cube) Render() (err error) {
 
 		case BottomFace:
 			{
+				rl.Color4ub(64, 64, 64, 255)
+
 				// Bottom face
 				rl.Vertex3f(x-width/2, y-height/2, z-length/2) // Top Left
 				rl.Vertex3f(x+width/2, y-height/2, z+length/2) // Bottom Right
@@ -177,6 +207,8 @@ func (cube *Cube) Render() (err error) {
 
 		case RightFace:
 			{
+				rl.Color4ub(128, 128, 128, 255)
+
 				// Right face
 				rl.Vertex3f(x+width/2, y-height/2, z-length/2) // Bottom Right
 				rl.Vertex3f(x+width/2, y+height/2, z-length/2) // Top Right
@@ -191,6 +223,8 @@ func (cube *Cube) Render() (err error) {
 
 		case LeftFace:
 			{
+				rl.Color4ub(128, 128, 128, 255)
+
 				// Left face
 				rl.Vertex3f(x-width/2, y-height/2, z-length/2) // Bottom Right
 				rl.Vertex3f(x-width/2, y+height/2, z+length/2) // Top Left

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/aquilax/go-perlin"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"log"
 	"os"
@@ -60,6 +61,14 @@ func (chunk *Chunk) PositionBase() Vector3 {
 	return chunk.position.Mul(Vector3New(16.0, 16.0, 16.0))
 }
 
+var (
+	noise *perlin.Perlin
+)
+
+func init() {
+	noise = perlin.NewPerlin(2, 2, 3, time.Now().UnixMilli())
+}
+
 func (chunk *Chunk) Init() *Chunk {
 	if chunk.world == nil {
 		panic("chunk world is nil")
@@ -69,11 +78,31 @@ func (chunk *Chunk) Init() *Chunk {
 	for x := 0; x < 16; x++ {
 		for y := 0; y < 16; y++ {
 			for z := 0; z < 16; z++ {
-				chunk.cubes[index] = (&Cube{
+				materials := []Material{
+					MaterialAir,
+					MaterialStone,
+				}
+
+				cube := (&Cube{
 					chunk:    chunk,
 					position: Vector3New(float32(x), float32(y), float32(z)),
-					material: []Material{MaterialAir, MaterialStone}[1],
 				}).Init()
+
+				posAbs := cube.PositionWorld()
+				posVal := noise.Noise3D(
+					float64(posAbs.X)/10,
+					float64(posAbs.Y)/10,
+					float64(posAbs.Z)/10) * 10.0
+
+				log.Println(posVal, posAbs)
+
+				if posVal <= 1.00 {
+					cube.material = materials[0]
+				} else {
+					cube.material = materials[1]
+				}
+
+				chunk.cubes[index] = cube
 
 				index++
 			}
