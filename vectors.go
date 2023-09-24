@@ -41,6 +41,10 @@ func (vector Vector3) Copy() Vector3 {
 	}
 }
 
+func (vector Vector3) Equals(v Vector3) bool {
+	return vector.X == v.X && vector.Y == v.Y && vector.Z == v.Z
+}
+
 func (vector Vector3) ToRaylib() rl.Vector3 {
 	return rl.Vector3{
 		X: vector.X,

@@ -69,6 +69,10 @@ func (player *Player) Tick(world *World) {
 
 	for _, chunk := range world.chunks {
 		for _, cube := range chunk.Cubes() {
+			if cube.Material() == MaterialAir {
+				continue
+			}
+
 			if cube.Position().Distance(player.Position()) > 8.0 {
 				continue
 			}

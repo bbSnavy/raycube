@@ -25,8 +25,8 @@ func (world *World) Init() *World {
 
 	world.entities = append(world.entities, world.player)
 
-	for x := 0; x < 2; x++ {
-		for z := 0; z < 2; z++ {
+	for x := 0; x < 4; x++ {
+		for z := 0; z < 4; z++ {
 			for y := 0; y < 1; y++ {
 				chunk := (&Chunk{
 					position: Vector3New(float32(x), float32(y), float32(z)),

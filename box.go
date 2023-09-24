@@ -12,6 +12,17 @@ const (
 	RightFace
 )
 
+func BoxFaceList() []BoxFace {
+	return []BoxFace{
+		TopFace,
+		BottomFace,
+		FrontFace,
+		BackFace,
+		LeftFace,
+		RightFace,
+	}
+}
+
 type Box struct {
 	position Vector3
 	size     Vector3
