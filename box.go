@@ -1,5 +1,7 @@
 package main
 
+import rl "github.com/gen2brain/raylib-go/raylib"
+
 type BoxFace int
 
 const (
@@ -54,6 +56,12 @@ func BoxNew(position, size Vector3) Box {
 	}
 }
 
+func (box Box) ToRaylib() rl.BoundingBox {
+	return rl.NewBoundingBox(
+		box.Min().ToRaylib(),
+		box.Max().ToRaylib())
+}
+
 func (box Box) PosX() float32 {
 	return box.position.X
 }
@@ -84,4 +92,14 @@ func (box Box) Min() Vector3 {
 
 func (box Box) Max() Vector3 {
 	return box.position.Add(box.size)
+}
+
+func (box Box) VectorBoxIntersect(vector Vector3) bool {
+	if vector.X >= box.PosX() && vector.X <= (box.PosX()+box.SizeX()) &&
+		vector.Y >= box.PosY() && vector.Y <= (box.PosY()+box.SizeY()) &&
+		vector.Z >= box.PosZ() && vector.Z <= (box.PosZ()+box.SizeZ()) {
+		return true
+	}
+
+	return false
 }

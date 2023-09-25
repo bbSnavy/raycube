@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/aquilax/go-perlin"
 	rl "github.com/gen2brain/raylib-go/raylib"
-	"log"
 	"os"
 	"time"
 )
@@ -94,13 +93,9 @@ func (chunk *Chunk) Init() *Chunk {
 					float64(posAbs.Y)/10,
 					float64(posAbs.Z)/10) * 10.0
 
-				log.Println(posVal, posAbs)
-
-				if posVal <= 1.00 {
-					cube.material = materials[0]
-				} else {
-					cube.material = materials[1]
-				}
+				_ = materials
+				_ = posVal
+				cube.material = MaterialStone
 
 				chunk.cubes[index] = cube
 
@@ -140,41 +135,49 @@ func (chunk *Chunk) MeshGenerate() (result []*Mesh, err error) {
 		position: chunk.PositionBase(),
 	}).Init()
 
-	var (
-		fn func(cube *Cube, mesh *Mesh)
-	)
-
 	timeStart := time.Now().UnixMicro()
 
-	fn = func(cube *Cube, mesh *Mesh) {
-		if mesh.HasCube(cube) {
-			return
-		}
+	//var (
+	//	fn func(cube *Cube, mesh *Mesh)
+	//)
+	//
+	//fn = func(cube *Cube, mesh *Mesh) {
+	//	if mesh.HasCube(cube) {
+	//		return
+	//	}
+	//
+	//	mesh.AddCube(cube)
+	//
+	//	for _, face := range BoxFaceList() {
+	//		neighbor := cube.Neighbor(face)
+	//		if neighbor == nil {
+	//			continue
+	//		}
+	//
+	//		if neighbor.Material() == MaterialAir {
+	//			continue
+	//		}
+	//
+	//		fn(neighbor, mesh)
+	//	}
+	//}
+	//
+	//fn(start, mesh)
 
-		mesh.AddCube(cube)
+	mesh.cubes = chunk.Cubes()[:]
 
-		for _, face := range BoxFaceList() {
-			neighbor := cube.Neighbor(face)
-			if neighbor == nil {
-				continue
-			}
-
-			if neighbor.Material() == MaterialAir {
-				continue
-			}
-
-			fn(neighbor, mesh)
-		}
-	}
-
-	fn(start, mesh)
+	//for _, cube := range chunk.Cubes() {
+	//	mesh.AddCube(cube)
+	//}
 
 	mesh.Compute()
 
 	timeEnd := time.Now().UnixMicro()
 
-	log.Println("mesh computed", float64(timeEnd-timeStart)/1000.0, "ms")
-	log.Println("mesh length->", len(mesh.Cubes()))
+	//log.Println("mesh computed", float64(timeEnd-timeStart)/1000.0, "ms")
+	//log.Println("mesh length->", len(mesh.Cubes()))
+	_ = timeStart
+	_ = timeEnd
 
 	result = append(result, mesh)
 

@@ -98,7 +98,6 @@ func (cube *Cube) Neighbor(face BoxFace) (result *Cube) {
 }
 
 func (cube *Cube) Render() (err error) {
-	cubeMaterial := cube.Material()
 	cubePositionWorld := cube.
 		Position().
 		Add(cube.Chunk().PositionBase()).
@@ -109,29 +108,33 @@ func (cube *Cube) Render() (err error) {
 
 	rl.Begin(rl.RL_TRIANGLES)
 
-	//switch cubeMaterial {
-	//case MaterialStone:
-	//	{
-	//		rl.Color4ub(
-	//			rl.Gray.R,
-	//			rl.Gray.G,
-	//			rl.Gray.B,
-	//			rl.Gray.A)
-	//
-	//		break
-	//	}
-	//
-	//case MaterialGrass:
-	//	{
-	//		rl.Color4ub(
-	//			rl.DarkGreen.R,
-	//			rl.DarkGreen.G,
-	//			rl.DarkGreen.B,
-	//			rl.DarkGreen.A)
-	//
-	//		break
-	//	}
-	//}
+	switch cube.Material() {
+	case MaterialAir:
+		{
+			return
+		}
+	case MaterialStone:
+		{
+			rl.Color4ub(
+				rl.Gray.R,
+				rl.Gray.G,
+				rl.Gray.B,
+				rl.Gray.A)
+
+			break
+		}
+
+	case MaterialGrass:
+		{
+			rl.Color4ub(
+				rl.DarkGreen.R,
+				rl.DarkGreen.G,
+				rl.DarkGreen.B,
+				rl.DarkGreen.A)
+
+			break
+		}
+	}
 
 	for index, value := range cube.facesEnabled {
 		face := BoxFace(index)
@@ -240,15 +243,6 @@ func (cube *Cube) Render() (err error) {
 	}
 
 	rl.End()
-
-	//rl.DrawCubeWires(
-	//	cubePositionWorld,
-	//	1.0,
-	//	1.0,
-	//	1.0,
-	//	rl.Red)
-
-	_ = cubeMaterial
 
 	return
 }

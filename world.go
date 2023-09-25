@@ -27,7 +27,7 @@ func (world *World) Init() *World {
 
 	for x := 0; x < 4; x++ {
 		for z := 0; z < 4; z++ {
-			for y := 0; y < 2; y++ {
+			for y := 0; y < 1; y++ {
 				chunk := (&Chunk{
 					position: Vector3New(float32(x), float32(y), float32(z)),
 

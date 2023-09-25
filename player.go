@@ -1,6 +1,7 @@
 package main
 
 import (
+	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/google/uuid"
 	"log"
 )
@@ -45,6 +46,54 @@ func (player *Player) Init() *Player {
 }
 
 func (player *Player) Tick(world *World) {
+	player.TickMovement(world)
+	player.TickRay(world)
+}
+
+func (player *Player) TickRay(world *World) {
+	var (
+		ray Vector3
+	)
+
+	ray = player.
+		Target().
+		Mul(Vector3New(10.0, 10.0, 10.0))
+
+	rayRL := rl.NewRay(
+		player.Position().
+			Add(player.CameraOffset()).
+			Add(Vector3New(0.50, 0.00, 0.50)).
+			ToRaylib(),
+		ray.
+			ToRaylib())
+
+	if rl.IsMouseButtonDown(rl.MouseLeftButton) {
+		for _, chunk := range world.chunks {
+			flag := false
+
+			for _, cube := range chunk.Cubes() {
+				if cube.Material() == MaterialAir {
+					continue
+				}
+
+				if !rl.GetRayCollisionBox(rayRL, cube.Box().ToRaylib()).Hit {
+					continue
+				}
+
+				cube.material = MaterialAir
+				flag = true
+			}
+
+			if flag {
+				go chunk.MeshGenerate()
+			}
+		}
+	}
+
+	return
+}
+
+func (player *Player) TickMovement(world *World) {
 	var (
 		acceleration Vector3
 		velocity     Vector3
@@ -84,24 +133,21 @@ func (player *Player) Tick(world *World) {
 
 				case TopFace:
 					velocity.Y = 0.0
-					break
+
 				case BottomFace:
 					velocity.Y = 0.0
-					break
 
 				case LeftFace:
 					velocity.X = 0.0
-					break
+
 				case RightFace:
 					velocity.X = 0.0
-					break
 
 				case FrontFace:
 					velocity.Z = 0.0
-					break
+
 				case BackFace:
 					velocity.Z = 0.0
-					break
 
 				default:
 					{
