@@ -57,7 +57,6 @@ func (player *Player) Tick(world *World) {
 
 	velocity = velocity.Mul(Vector3New(0.90, 0.90, 0.90))
 	velocity = velocity.Add(acceleration.Mul(Vector3New(0.10, 0.10, 0.10)))
-	velocity = velocity.Add(Vector3New(0.00, -0.005, 0.00))
 
 	acceleration = acceleration.Mul(Vector3New(0.90, 0.90, 0.90))
 
@@ -73,7 +72,7 @@ func (player *Player) Tick(world *World) {
 				continue
 			}
 
-			if cube.Position().Distance(player.Position()) > 8.0 {
+			if cube.PositionWorld().Distance(player.Position()) > 8.0 {
 				continue
 			}
 
@@ -111,6 +110,7 @@ func (player *Player) Tick(world *World) {
 					}
 				}
 			}
+
 		}
 	}
 

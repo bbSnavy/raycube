@@ -33,7 +33,7 @@ func (cube *Cube) PositionWorld() Vector3 {
 
 func (cube *Cube) Box() Box {
 	return BoxNew(
-		cube.Position(),
+		cube.PositionWorld(),
 		Vector3NewUnit())
 }
 
