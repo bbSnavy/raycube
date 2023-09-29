@@ -99,6 +99,34 @@ func (cube *Cube) Neighbor(face BoxFace) (result *Cube) {
 }
 
 func (cube *Cube) Render() (err error) {
+	switch cube.Material() {
+	case MaterialAir:
+		{
+			return
+		}
+		// case MaterialStone:
+		// 	{
+		// 		rl.Color4ub(
+		// 			rl.Gray.R,
+		// 			rl.Gray.G,
+		// 			rl.Gray.B,
+		// 			rl.Gray.A)
+
+		// 		break
+		// 	}
+
+		// case MaterialGrass:
+		// 	{
+		// 		rl.Color4ub(
+		// 			rl.DarkGreen.R,
+		// 			rl.DarkGreen.G,
+		// 			rl.DarkGreen.B,
+		// 			rl.DarkGreen.A)
+
+		// 		break
+		// 	}
+	}
+
 	cubePositionWorld := cube.
 		Position().
 		Add(cube.Chunk().PositionBase()).
@@ -106,34 +134,6 @@ func (cube *Cube) Render() (err error) {
 
 	x, y, z := cubePositionWorld.X, cubePositionWorld.Y, cubePositionWorld.Z
 	width, height, length := float32(1.0), float32(1.0), float32(1.0)
-
-	switch cube.Material() {
-	case MaterialAir:
-		{
-			return
-		}
-	case MaterialStone:
-		{
-			rl.Color4ub(
-				rl.Gray.R,
-				rl.Gray.G,
-				rl.Gray.B,
-				rl.Gray.A)
-
-			break
-		}
-
-	case MaterialGrass:
-		{
-			rl.Color4ub(
-				rl.DarkGreen.R,
-				rl.DarkGreen.G,
-				rl.DarkGreen.B,
-				rl.DarkGreen.A)
-
-			break
-		}
-	}
 
 	for index, value := range cube.facesEnabled {
 		face := BoxFace(index)
