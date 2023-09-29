@@ -115,7 +115,7 @@ func (game *Game) ProcessInputs() (err error) {
 		rl.TakeScreenshot("frame.png")
 	}
 
-	if rl.IsKeyPressed(rl.KeyF11) {
+	if rl.IsKeyPressed(rl.KeyF) {
 		rl.ToggleFullscreen()
 	}
 

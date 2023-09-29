@@ -129,18 +129,17 @@ func (cube *Cube) Render() (err error) {
 
 	cubePositionWorld := cube.
 		Position().
-		Add(cube.Chunk().PositionBase()).
-		ToRaylib()
+		Add(cube.Chunk().PositionBase())
 
 	x, y, z := cubePositionWorld.X, cubePositionWorld.Y, cubePositionWorld.Z
 	width, height, length := float32(1.0), float32(1.0), float32(1.0)
 
 	for index, value := range cube.facesEnabled {
-		face := BoxFace(index)
-
 		if !value {
 			continue
 		}
+
+		face := BoxFace(index)
 
 		switch face {
 		case FrontFace:
