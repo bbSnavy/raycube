@@ -110,12 +110,12 @@ func (chunk *Chunk) Init() *Chunk {
 	return chunk
 }
 
-func (chunk *Chunk) MeshGenerate() (result []*Mesh, err error) {
+func (chunk *Chunk) MeshGenerate() {
 	var (
 		mesh *Mesh
 	)
 
-	result = make([]*Mesh, 0)
+	result := make([]*Mesh, 0)
 
 	mesh = (&Mesh{
 		position: chunk.PositionBase(),
@@ -126,7 +126,8 @@ func (chunk *Chunk) MeshGenerate() (result []*Mesh, err error) {
 
 	result = append(result, mesh)
 
-	return
+	chunk.meshComputed = true
+	chunk.meshSnapshot = result
 }
 
 var (
@@ -149,17 +150,14 @@ func (chunk *Chunk) Render() (err error) {
 	}
 
 	if !chunk.meshComputed {
-		chunk.meshSnapshot, err = chunk.MeshGenerate()
-		if err != nil {
-			return
-		}
+		go chunk.MeshGenerate()
 
-		chunk.meshComputed = true
+		return
 	}
 
 	for _, mesh := range chunk.meshSnapshot {
 		if !mesh.computed {
-			panic("mesh has not been computed")
+			continue
 		}
 
 		for _, cube := range mesh.Cubes() {
