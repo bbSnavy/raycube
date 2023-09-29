@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/aquilax/go-perlin"
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"os"
 	"time"
+
+	"github.com/aquilax/go-perlin"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 const (
@@ -111,73 +112,17 @@ func (chunk *Chunk) Init() *Chunk {
 
 func (chunk *Chunk) MeshGenerate() (result []*Mesh, err error) {
 	var (
-		mesh  *Mesh
-		start *Cube
+		mesh *Mesh
 	)
 
 	result = make([]*Mesh, 0)
-
-	start = nil
-	for _, cube := range chunk.Cubes() {
-		if cube.Material() == MaterialAir {
-			continue
-		}
-
-		start = cube
-		break
-	}
-
-	if start == nil {
-		return
-	}
 
 	mesh = (&Mesh{
 		position: chunk.PositionBase(),
 	}).Init()
 
-	timeStart := time.Now().UnixMicro()
-
-	//var (
-	//	fn func(cube *Cube, mesh *Mesh)
-	//)
-	//
-	//fn = func(cube *Cube, mesh *Mesh) {
-	//	if mesh.HasCube(cube) {
-	//		return
-	//	}
-	//
-	//	mesh.AddCube(cube)
-	//
-	//	for _, face := range BoxFaceList() {
-	//		neighbor := cube.Neighbor(face)
-	//		if neighbor == nil {
-	//			continue
-	//		}
-	//
-	//		if neighbor.Material() == MaterialAir {
-	//			continue
-	//		}
-	//
-	//		fn(neighbor, mesh)
-	//	}
-	//}
-	//
-	//fn(start, mesh)
-
 	mesh.cubes = chunk.Cubes()[:]
-
-	//for _, cube := range chunk.Cubes() {
-	//	mesh.AddCube(cube)
-	//}
-
 	mesh.Compute()
-
-	timeEnd := time.Now().UnixMicro()
-
-	//log.Println("mesh computed", float64(timeEnd-timeStart)/1000.0, "ms")
-	//log.Println("mesh length->", len(mesh.Cubes()))
-	_ = timeStart
-	_ = timeEnd
 
 	result = append(result, mesh)
 
