@@ -172,10 +172,14 @@ func (chunk *Chunk) Render() (err error) {
 }
 
 func (chunk *Chunk) RenderCube(cube *Cube) (err error) {
+	rl.Begin(rl.RL_TRIANGLES)
+
 	err = cube.Render()
 	if err != nil {
 		return
 	}
+
+	rl.End()
 
 	return
 }

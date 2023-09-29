@@ -1,8 +1,9 @@
 package main
 
 import (
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 import "C"
@@ -105,8 +106,6 @@ func (cube *Cube) Render() (err error) {
 
 	x, y, z := cubePositionWorld.X, cubePositionWorld.Y, cubePositionWorld.Z
 	width, height, length := float32(1.0), float32(1.0), float32(1.0)
-
-	rl.Begin(rl.RL_TRIANGLES)
 
 	switch cube.Material() {
 	case MaterialAir:
@@ -241,8 +240,6 @@ func (cube *Cube) Render() (err error) {
 			}
 		}
 	}
-
-	rl.End()
 
 	return
 }
