@@ -98,6 +98,10 @@ func (chunk *Chunk) Init() *Chunk {
 				_ = posVal
 				cube.material = MaterialStone
 
+				if ((x + y + z) % 2) == 0 {
+					cube.material = MaterialAir
+				}
+
 				chunk.cubes[index] = cube
 
 				index++
@@ -160,12 +164,16 @@ func (chunk *Chunk) Render() (err error) {
 			continue
 		}
 
+		// rl.Begin(rl.Triangles)
+
 		for _, cube := range mesh.Cubes() {
 			err = chunk.RenderCube(cube)
 			if err != nil {
 				return
 			}
 		}
+
+		// rl.End()
 	}
 
 	return
