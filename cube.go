@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"image/color"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -18,6 +19,7 @@ type Cube struct {
 	material Material
 
 	facesEnabled [7]bool
+	facesColor   [7]color.RGBA
 }
 
 func (cube *Cube) Chunk() *Chunk {
@@ -43,6 +45,29 @@ func (cube *Cube) Material() Material {
 }
 
 func (cube *Cube) Init() *Cube {
+	randomBytes := func(size int) []byte {
+		data := make([]byte, size)
+
+		rand.Read(data)
+
+		return data
+	}
+
+	randomRgb := func() color.RGBA {
+		data := randomBytes(3)
+
+		return color.RGBA{
+			R: data[0],
+			G: data[1],
+			B: data[2],
+			A: 255,
+		}
+	}
+
+	for x := range 7 {
+		cube.facesColor[x] = randomRgb()
+	}
+
 	for index := range cube.facesEnabled {
 		cube.facesEnabled[index] = false
 	}
@@ -140,11 +165,13 @@ func (cube *Cube) Render() (err error) {
 		}
 
 		face := BoxFace(index)
+		faceColor := cube.facesColor[index]
+		rl.Color4ub(faceColor.R, faceColor.G, faceColor.B, 255)
 
 		switch face {
 		case FrontFace:
 			{
-				rl.Color4ub(128, 128, 128, 255)
+				// rl.Color4ub(128, 128, 128, 255)
 
 				// Front face
 				rl.Vertex3f(x-width/2, y-height/2, z+length/2) // Bottom Left
@@ -160,7 +187,7 @@ func (cube *Cube) Render() (err error) {
 
 		case BackFace:
 			{
-				rl.Color4ub(128, 128, 128, 255)
+				// rl.Color4ub(128, 128, 128, 255)
 
 				// Back face
 				rl.Vertex3f(x-width/2, y-height/2, z-length/2) // Bottom Left
@@ -176,7 +203,7 @@ func (cube *Cube) Render() (err error) {
 
 		case TopFace:
 			{
-				rl.Color4ub(255, 255, 255, 255)
+				// rl.Color4ub(255, 255, 255, 255)
 
 				// Top face
 				rl.Vertex3f(x-width/2, y+height/2, z-length/2) // Top Left
@@ -192,7 +219,7 @@ func (cube *Cube) Render() (err error) {
 
 		case BottomFace:
 			{
-				rl.Color4ub(64, 64, 64, 255)
+				// rl.Color4ub(64, 64, 64, 255)
 
 				// Bottom face
 				rl.Vertex3f(x-width/2, y-height/2, z-length/2) // Top Left
@@ -208,7 +235,7 @@ func (cube *Cube) Render() (err error) {
 
 		case RightFace:
 			{
-				rl.Color4ub(128, 128, 128, 255)
+				// rl.Color4ub(128, 128, 128, 255)
 
 				// Right face
 				rl.Vertex3f(x+width/2, y-height/2, z-length/2) // Bottom Right
@@ -224,7 +251,7 @@ func (cube *Cube) Render() (err error) {
 
 		case LeftFace:
 			{
-				rl.Color4ub(128, 128, 128, 255)
+				// rl.Color4ub(128, 128, 128, 255)
 
 				// Left face
 				rl.Vertex3f(x-width/2, y-height/2, z-length/2) // Bottom Right

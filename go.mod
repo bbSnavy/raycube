@@ -1,6 +1,6 @@
 module github.com/bbsnavy/raycube
 
-go 1.21.1
+go 1.22.4
 
 require (
 	github.com/gen2brain/raylib-go/raylib v0.0.0-20240524074310-a997a44fb95b

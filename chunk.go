@@ -121,7 +121,7 @@ func (chunk *Chunk) MeshGenerate() {
 		position: chunk.PositionBase(),
 	}).Init()
 
-	mesh.cubes = chunk.Cubes()[:]
+	mesh.cubes = chunk.Cubes()
 	mesh.Compute()
 
 	result = append(result, mesh)
@@ -140,7 +140,7 @@ func (chunk *Chunk) Render() (err error) {
 	if !modelLoaded {
 		modelTexture = rl.LoadTexture(os.Getenv("TEXTURE"))
 
-		rl.SetTextureWrap(modelTexture, rl.RL_TEXTURE_WRAP_REPEAT)
+		rl.SetTextureWrap(modelTexture, rl.WrapRepeat)
 
 		mesh := rl.GenMeshCube(1.0, 1.0, 1.0)
 		model = rl.LoadModelFromMesh(mesh)
@@ -172,7 +172,7 @@ func (chunk *Chunk) Render() (err error) {
 }
 
 func (chunk *Chunk) RenderCube(cube *Cube) (err error) {
-	rl.Begin(rl.RL_TRIANGLES)
+	rl.Begin(rl.Triangles)
 
 	err = cube.Render()
 	if err != nil {
